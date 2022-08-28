@@ -1,0 +1,35 @@
+@import '../../styles/variables.scss';
+$input-radius: 4px;
+.taskInput{
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1fr 55px;
+    margin-bottom: 1rem;
+
+    &Value{
+        border: 1px solid #b1b1b1;
+        border-radius: none;
+        border-top-left-radius: $input-radius;
+        border-bottom-left-radius: $input-radius;
+        padding: 8px 10px;
+        font: 1rem 'Roboto', sans-serif;
+        background: #dbe2ef;
+        &::placeholder{
+            color: #6b6b6c;
+        };
+    }
+
+    &Button{
+        border: none;
+        border-radius: none;
+        border-top-right-radius: $input-radius;
+        border-bottom-right-radius: $input-radius;
+        cursor: pointer;
+        background: $primary url('./images/plus.svg') no-repeat center center;
+        transition: opacity 0.3s;
+
+        &:hover{
+            opacity: 0.8;
+        }
+    }
+}
