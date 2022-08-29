@@ -62,7 +62,7 @@ export const TaskItem: React.FC<TaskItemProps>=({
                         onKeyDown={evt=>inputKeyDown(evt)}
                     />
                 ) : (
-                    <h3 className={styles.taskItemTitle}>{title}</h3>
+                    <h3 className={styles.taskItemTitle+`${checked?' '+styles.taskItemDone:''}`}>{title}5674567{checked}</h3>
                 )}
                 
             </label>
