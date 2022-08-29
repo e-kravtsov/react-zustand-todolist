@@ -2,23 +2,13 @@ import React from "react";
 
 import { useToDoStore } from '../../data/stores/useToDoStore';
 import { TaskInput } from '../components/TaskInput';
-import { TaskItem } from '../components/TaskItem';
+import { TaskList } from '../components/TaskList';
 
 import styles from './index.module.scss'
 
 
 export const App: React.FC = ()=>{
-    const [
-        tasks,
-        createTask,
-        updateTask,
-        removeTask
-    ] = useToDoStore(state=>[
-        state.tasks,
-        state.createTask,
-        state.updateTask,
-        state.removeTask
-    ])
+    const createTask = useToDoStore(state=> state.createTask )
     // useEffect(()=>{ //react strict mode calls it twice in dev mode
     //     createTask('firstTask')
     // }, [])
@@ -31,21 +21,7 @@ export const App: React.FC = ()=>{
                 />
             </section>
             <section className={styles.secton}>
-                {!tasks.length && (
-                    <p className={styles.articleText}>
-                        There are no tasks added
-                    </p>
-                )}
-                {tasks.map(task=>(
-                    <TaskItem
-                        key={task.id}
-                        id={task.id}
-                        title={task.title}
-                        onDone={removeTask}
-                        onEdited={updateTask}
-                        onRemoved={removeTask}
-                    />
-                ))}
+                <TaskList/>
             </section>
         </article>
         );
