@@ -1,6 +1,9 @@
 import create, {State, StateCreator} from 'zustand'
 import {devtools} from 'zustand/middleware'
 import {generateId} from '../helpers'
+import Cookies from 'js-cookie'
+
+Cookies.set('foo', 'bar')
 
 interface Task {
     id: string;
@@ -22,15 +25,14 @@ function isToDoStore(object: any): object is ToDoStore{
 const localStorageUpdate =  <T extends State>(config: StateCreator<T>)
 : StateCreator<T>=>(set, get, api) => config((nextState, ...args)=>{
     if(isToDoStore(nextState)){
-    window.localStorage.setItem('tasks', JSON.stringify(
-        nextState.tasks
-    ))}
+        Cookies.set('tasks', JSON.stringify(nextState.tasks), { expires: 7 })
+    }
     set(nextState, ...args)
 }, get, api)
 
 const getCurrentState = ():Task[] => {
     try{
-    return JSON.parse(window.localStorage.getItem('tasks')||'[]') as Task[]
+    return JSON.parse(Cookies.get('tasks')||'[]') as Task[]
     } catch(error){
         console.log(error)
         return []
@@ -39,30 +41,34 @@ const getCurrentState = ():Task[] => {
 
 export const useToDoStore = create<ToDoStore>(
     localStorageUpdate(
-    devtools((set, get)=>({
-    tasks: getCurrentState(),
-    createTask:(title)=>{
-        const {tasks}=get();
-        const task: Task = {
-            id:generateId(), title, createdAt: Date.now()
-        }
-        set({
-            tasks: [task, ...tasks]
-        });
-    },
-    updateTask:(id, title)=>{
-        const {tasks} = get();
-        set({
-            tasks: tasks.map(v=>({
-                ...v,
-                title: v.id===id?title: v.title
-            }))
-        });
-    },
-    removeTask:(id)=>{
-        const {tasks} = get();
-        set({
-            tasks: tasks.filter(v=>v.id!==id)
-        });
-    }
-}))))
+        devtools(
+            (set, get)=>({
+                tasks: getCurrentState(),
+                createTask:(title)=>{
+                    const {tasks}=get();
+                    const task: Task = {
+                        id:generateId(), title, createdAt: Date.now()
+                    }
+                    set({
+                        tasks: [task, ...tasks]
+                    });
+                },
+                updateTask:(id, title)=>{
+                    const {tasks} = get();
+                    set({
+                        tasks: tasks.map(v=>({
+                            ...v,
+                            title: v.id===id?title: v.title
+                        }))
+                    });
+                },
+                removeTask:(id)=>{
+                    const {tasks} = get();
+                    set({
+                        tasks: tasks.filter(v=>v.id!==id)
+                    });
+                }
+            })
+        )
+    )
+)
